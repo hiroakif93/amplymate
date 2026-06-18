@@ -53,7 +53,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libxtst6 \
     unixodbc-dev \
     libuv1-dev \
-    xz-utils
+    xz-utils \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
