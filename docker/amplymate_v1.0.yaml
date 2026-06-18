@@ -5,7 +5,6 @@ services:
       context: .
       dockerfile: amplymate.Dockerfile
       args:
-        R: "4.5.3"
         VSEARCH: "2.30.6"
         CUTADAPT: "5.2"
         BIOC: "3.22"

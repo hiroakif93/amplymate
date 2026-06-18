@@ -1,6 +1,6 @@
 # Versions in programs
 ARG R
-FROM rocker/rstudio:${R}
+FROM rocker/rstudio:4.5.3
 
 ARG VSEARCH
 ARG CUTADAPT
@@ -25,8 +25,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
     build-essential \
     pkg-config \
-    libcurl4-openssl-dev \
     default-jre \
+    libcurl4-openssl-dev \
     libssl-dev \
     libxml2-dev \
     libfontconfig1-dev \
@@ -43,6 +43,17 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     autoconf \
     automake \
     libtool \
+    libcairo2-dev \
+    libgit2-dev \
+    default-libmysqlclient-dev \
+    libpq-dev \
+    libsasl2-dev \
+    libsqlite3-dev \
+    libssh2-1-dev \
+    libxtst6 \
+    unixodbc-dev \
+    libuv1-dev \
+    xz-utils
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -61,7 +72,7 @@ RUN wget -O vsearch.tar.gz \
     && cd ../ \
     && rm -rf vsearch-${VSEARCH} vsearch.tar.gz
 
-RUN R -q -e "install.packages(c('tidyverse','BiocManager','optparse'), repos='https://cloud.r-project.org')"
+RUN R -q -e "install.packages(c('tidyverse','BiocManager','optparse'), repos='https://cloud.r-project.org', Ncpus = parallel::detectCores())"
 RUN R -q -e "BiocManager::install( c('dada2','seqinr','Biostrings','ShortRead', 'doParallel'), version='$BIOC')"
 
 RUN wget -O seqkit.tar.gz \
