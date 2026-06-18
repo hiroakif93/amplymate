@@ -1,0 +1,67 @@
+services:
+  amplymate:
+    image: amplymate_v1.0
+    build:
+      context: .
+      dockerfile: amplymate.Dockerfile
+      args:
+        R: "4.5.3"
+        VSEARCH: "2.30.6"
+        CUTADAPT: "5.2"
+        BIOC: "3.22"
+        SEQKIT: "2.13.0"
+        FASTQC: "0.12.1"
+
+        UID: ${UID:-1000}
+        GID: ${GID:-1000}
+
+    volumes:
+      - type: bind
+        source: ${MOUNT_PATH:-.}
+        target: /data
+
+      - type: bind
+        source: ${DB_DIR:-${HOME}/db}
+        target: /db
+
+      - type: bind
+        source: ${SCRIPT_PATH:-./amplymate/scripts}
+        target: /data/_SCRIPTS
+
+    environment:
+      SCRIPT_PATH: /data/_SCRIPTS
+      BASE_PATH: "/data"
+      RAW_FASTQ: "/data/BCLConvert/fastq"
+      DEMUX_BY_PRIMER: "/data/01_DEMUX_BY_PRIMER"
+      TRIMMING: "/data/02_TRIMMING"
+      QUALITY_CONTROL: "/data/03_FILT_SEQ"
+      DENOISING: "/data/04_DENOISING"
+      ANNOTATION: "/data/05_ANNOTATION"
+      CLUSTERING: "/data/06_CLUSTERING"
+
+      EVAL_SUMMARY: "/data/EVAL"
+      EVAL_DEMUX: "/data/EVAL/DEMUX_PRIMER"
+      EVAL_TRIMMING: "/data/EVAL/TRIMMING"
+      EVAL_FILT: "/data/EVAL/FILTERING"
+      THREADS: 32
+
+      PASSWORD: ${RSTUDIO_PASSWORD:-rstudio}
+      DISABLE_AUTH: "false"
+
+    container_name: amplymate
+
+    working_dir: /data
+
+    ports:
+      - "8787:8787"
+
+    ulimits:
+      nofile:
+        soft: 65535
+        hard: 65535
+      nproc:
+        soft: 32768
+        hard: 32768
+
+    stdin_open: true
+    tty: true
