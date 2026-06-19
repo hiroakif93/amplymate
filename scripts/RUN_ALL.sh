@@ -25,7 +25,7 @@ if [ ! -f $SCRIPT_PATH ]; then
     read -p "Specify path to docker compose file (.yaml): " COMPOSE_YAML
 fi
 
-export MOUNT_PATH SCRIPT_PATH
+export MOUNT_PATH SCRIPT_PATH GENOME_DB
 
 docker compose -f $COMPOSE_YAML run --rm --user "$(id -u):$(id -g)" amplymate bash /data/_SCRIPTS/01_CUTADAPT.sh -f ${SCRIPT_PATH}/FWD.fasta -e ${CUTADAPT_eroor}
 docker compose -f $COMPOSE_YAML run --rm --user "$(id -u):$(id -g)" amplymate bash /data/_SCRIPTS/02_TRIMMING.sh  -f ${SCRIPT_PATH}/FWD.fasta -e ${CUTADAPT_eroor}
