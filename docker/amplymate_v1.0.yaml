@@ -20,7 +20,7 @@ services:
         target: /data
 
       - type: bind
-        source: ${DB_DIR:-${HOME}/db}
+        source: ${GENOME_DB:-${HOME}/db}
         target: /db
 
       - type: bind

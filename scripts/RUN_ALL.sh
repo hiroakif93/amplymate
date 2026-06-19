@@ -2,6 +2,7 @@
 MOUNT_PATH="/home/user/miseq_output"
 SCRIPT_PATH="./scripts"
 COMPOSE_YAML="./docker/amplymate_v1.0.yaml"
+GENOME_DB="$HOME/db"
 
 while getopts "m:s:y:c:" opt; do
   case "$opt" in
