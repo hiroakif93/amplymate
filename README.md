@@ -17,12 +17,25 @@ Do not forget to add the UID and GID, as file permissions are restricted without
 There are three ways to perform programs.
 
 1. Run without entering the Docker container.
-For example, to run Cutadapt.
-```
-docker compose -f $COMPOSE_YAML \
-  run --rm --user "$(id -u):$(id -g)" amplymate \
-  bash /data/_SCRIPTS/01_CUTADAPT.sh -f ${SCRIPT_PATH}/FWD.fasta -e ${CUTADAPT_eroor}
-```
+  Copy `amplymate_v1.0.yaml` from the Docker folder to the MiSeq output folder, which often starts with the sequence date.
+  e.g. `cp "amplymate_v1.0.yaml" to "20260101_SHxxxx..."`
+
+  Specify a folder to mount on Docker. The path requires the full path, not a relative one.
+  ```
+  MOUNT_PATH="$(pwd)"
+  SCRIPT_PATH="$(pwd)/scripts"
+  COMPOSE_YAML="$(pwd)/amplymate_v1.0.yaml"
+  GENOME_DB="$HOME/db"
+  ```
+
+  Export the above variables to the system and run Docker.
+  ```
+  export MOUNT_PATH SCRIPT_PATH GENOME_DB
+  
+  docker compose -f $COMPOSE_YAML \
+    run --rm --user "$(id -u):$(id -g)" amplymate \
+    bash /data/_SCRIPTS/01_CUTADAPT.sh -f ${SCRIPT_PATH}/FWD.fasta -e ${CUTADAPT_eroor}
+  ```
 
 2. Run interactively.
 ```

@@ -1,34 +1,13 @@
 
-MOUNT_PATH="/home/user/miseq_output"
-SCRIPT_PATH="./scripts"
-COMPOSE_YAML="./docker/amplymate_v1.0.yaml"
+MOUNT_PATH="$(pwd)"
+SCRIPT_PATH="$(pwd)/scripts"
+COMPOSE_YAML="$(pwd)/amplymate_v1.0.yaml"
 GENOME_DB="$HOME/db"
-
-while getopts "m:s:y:c:" opt; do
-  case "$opt" in
-    m) MOUNT_PATH="$OPTARG" ;;
-    s) SCRIPT_PATH="$OPTARG" ;;
-    y) COMPOSE_YAML="$OPTARG" ;;
-    c) CUTADAPT_eroor="$OPTARG" ;;
-  esac
-done
-
-if [ ! -d $MOUNT_PATH ]; then
-    read -p "Specify path to mount on docker: " MOUNT_PATH
-fi
-
-if [ ! -d $SCRIPT_PATH ]; then
-    read -p "Specify path to directory containg scripts: " SCRIPT_PATH
-fi
-
-if [ ! -f $SCRIPT_PATH ]; then
-    read -p "Specify path to docker compose file (.yaml): " COMPOSE_YAML
-fi
 
 export MOUNT_PATH SCRIPT_PATH GENOME_DB
 
-docker compose -f $COMPOSE_YAML run --rm --user "$(id -u):$(id -g)" amplymate bash /data/_SCRIPTS/01_CUTADAPT.sh -f ${SCRIPT_PATH}/FWD.fasta -e ${CUTADAPT_eroor}
-docker compose -f $COMPOSE_YAML run --rm --user "$(id -u):$(id -g)" amplymate bash /data/_SCRIPTS/02_TRIMMING.sh  -f ${SCRIPT_PATH}/FWD.fasta -e ${CUTADAPT_eroor}
+docker compose -f $COMPOSE_YAML run --rm --user "$(id -u):$(id -g)" amplymate bash /data/_SCRIPTS/01_CUTADAPT.sh
+docker compose -f $COMPOSE_YAML run --rm --user "$(id -u):$(id -g)" amplymate bash /data/_SCRIPTS/02_TRIMMING.sh
 docker compose -f $COMPOSE_YAML run --rm --user "$(id -u):$(id -g)" amplymate Rscript /data/_SCRIPTS/03_FILTERING.R
 docker compose -f $COMPOSE_YAML run --rm --user "$(id -u):$(id -g)" amplymate Rscript /data/_SCRIPTS/04_DENOISING.R
 docker compose -f $COMPOSE_YAML run --rm --user "$(id -u):$(id -g)" amplymate Rscript /data/_SCRIPTS/05_ANNOTATION.R

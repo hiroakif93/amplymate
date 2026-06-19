@@ -1,6 +1,29 @@
 services:
   amplymate:
     image: amplymate_v1.0
+
+    environment:
+      MISMATCH_rate: 0.2
+
+      SCRIPT_PATH: /_SCRIPTS
+      BASE_PATH: "/data"
+      RAW_FASTQ: "/data/BCLConvert/fastq"
+      DEMUX_BY_PRIMER: "/data/01_DEMUX_BY_PRIMER"
+      TRIMMING: "/data/02_TRIMMING"
+      QUALITY_CONTROL: "/data/03_FILT_SEQ"
+      DENOISING: "/data/04_DENOISING"
+      ANNOTATION: "/data/05_ANNOTATION"
+      CLUSTERING: "/data/06_CLUSTERING"
+
+      EVAL_SUMMARY: "/data/EVAL"
+      EVAL_DEMUX: "/data/EVAL/DEMUX_PRIMER"
+      EVAL_TRIMMING: "/data/EVAL/TRIMMING"
+      EVAL_FILT: "/data/EVAL/FILTERING"
+      THREADS: 32
+
+      PASSWORD: ${RSTUDIO_PASSWORD:-rstudio}
+      DISABLE_AUTH: "false"
+
     build:
       context: .
       dockerfile: amplymate.Dockerfile
@@ -26,26 +49,6 @@ services:
       - type: bind
         source: ${SCRIPT_PATH:-./amplymate/scripts}
         target: /_SCRIPTS
-
-    environment:
-      SCRIPT_PATH: /_SCRIPTS
-      BASE_PATH: "/data"
-      RAW_FASTQ: "/data/BCLConvert/fastq"
-      DEMUX_BY_PRIMER: "/data/01_DEMUX_BY_PRIMER"
-      TRIMMING: "/data/02_TRIMMING"
-      QUALITY_CONTROL: "/data/03_FILT_SEQ"
-      DENOISING: "/data/04_DENOISING"
-      ANNOTATION: "/data/05_ANNOTATION"
-      CLUSTERING: "/data/06_CLUSTERING"
-
-      EVAL_SUMMARY: "/data/EVAL"
-      EVAL_DEMUX: "/data/EVAL/DEMUX_PRIMER"
-      EVAL_TRIMMING: "/data/EVAL/TRIMMING"
-      EVAL_FILT: "/data/EVAL/FILTERING"
-      THREADS: 32
-
-      PASSWORD: ${RSTUDIO_PASSWORD:-rstudio}
-      DISABLE_AUTH: "false"
 
     container_name: amplymate
 
