@@ -47,7 +47,7 @@ trimming_seq() {
 	if [ -f $r2 ];then
 		cutadapt \
 		  --nextseq-trim 0 -j $THREAD \
-		  -e $SEQ_IDENT -n 5 --report minimal --revcomp \
+		  -e $SEQ_IDENT -n 10 --report minimal --revcomp \
 		  -A file:$FWD_P \
 		  -b CTGTCTCTTATACACATCT -b TGGAATTCTCGG -b AGATCGGAAGAG \
 		  -b TCGTCGGCAGCGTCAGATGTGTATAAGAGACAG -b GTCTCGTGGGCTCGGAGATGTGTATAAGAGACAG \

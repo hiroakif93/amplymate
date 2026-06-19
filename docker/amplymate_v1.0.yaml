@@ -25,10 +25,10 @@ services:
 
       - type: bind
         source: ${SCRIPT_PATH:-./amplymate/scripts}
-        target: /data/_SCRIPTS
+        target: /_SCRIPTS
 
     environment:
-      SCRIPT_PATH: /data/_SCRIPTS
+      SCRIPT_PATH: /_SCRIPTS
       BASE_PATH: "/data"
       RAW_FASTQ: "/data/BCLConvert/fastq"
       DEMUX_BY_PRIMER: "/data/01_DEMUX_BY_PRIMER"

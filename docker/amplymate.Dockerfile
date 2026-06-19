@@ -100,8 +100,8 @@ RUN echo "setwd('/data')" >> /home/rstudio/.Rprofile\
     && chown "${UID}:${GID}" /home/rstudio/.Rprofile
 
 # Make directroy to mount
-RUN mkdir -p /data /db /data/_SCRIPTS \
-    && chmod 775 /data /db /data/_SCRIPTS
+RUN mkdir -p /data /db /_SCRIPTS \
+    && chmod 775 /data /db /_SCRIPTS
 
 WORKDIR /data
 
