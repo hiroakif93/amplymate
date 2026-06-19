@@ -8,6 +8,6 @@ if [ "$(docker compose -f "$COMPOSE_YAML" ps --status running -q "$SERVICE")" ];
   docker compose -f "$COMPOSE_YAML" down
 fi
 
-UID=$(id -u) GID=$(id -g) docker compose -f $COMPOSE_YAML up -d amplymate
+docker compose -f $COMPOSE_YAML up -d amplymate
 
 open http://localhost:8787/

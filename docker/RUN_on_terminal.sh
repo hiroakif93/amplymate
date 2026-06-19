@@ -1,7 +1,7 @@
 #!/bin/bash
 
-MOUNT_PATH="/home/user/miseq_output"
-SCRIPT_PATH="./scripts"
+export MOUNT_PATH="/home/user/miseq_output"
+export SCRIPT_PATH="./scripts"
 COMPOSE_YAML="./docker/amplymate_v1.0.yaml"
 
-UID=$(id -u) GID=$(id -g) docker compose -f $COMPOSE_YAML run --rm amplymate bash
+docker compose -f $COMPOSE_YAML run --user "$(id -u):$(id -g)" --rm amplymate bash

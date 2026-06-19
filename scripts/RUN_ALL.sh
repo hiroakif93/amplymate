@@ -26,12 +26,11 @@ if [ ! -f $SCRIPT_PATH ]; then
     read -p "Specify path to docker compose file (.yaml): " COMPOSE_YAML
 fi
 
-UID=$(id -u)
-GID=$(id -g)
+export MOUNT_PATH SCRIPT_PATH
 
-docker compose -f $COMPOSE_YAML run --rm amplymate bash /data/_SCRIPTS/01_CUTADAPT.sh -f ${SCRIPT_PATH}/FWD.fasta -e ${CUTADAPT_eroor}
-docker compose -f $COMPOSE_YAML run --rm amplymate bash /data/_SCRIPTS/02_TRIMMING.sh  -f ${SCRIPT_PATH}/FWD.fasta -e ${CUTADAPT_eroor}
-docker compose -f $COMPOSE_YAML run --rm amplymate Rscript /data/_SCRIPTS/03_FILTERING.R
-docker compose -f $COMPOSE_YAML run --rm amplymate Rscript /data/_SCRIPTS/04_DENOISING.R
-docker compose -f $COMPOSE_YAML run --rm amplymate Rscript /data/_SCRIPTS/05_ANNOTATION.R
-docker compose -f $COMPOSE_YAML run --rm amplymate Rscript /data/_SCRIPTS/06_CLUSTERING_ASV.R
+docker compose -f $COMPOSE_YAML run --rm --user "$(id -u):$(id -g)" amplymate bash /data/_SCRIPTS/01_CUTADAPT.sh -f ${SCRIPT_PATH}/FWD.fasta -e ${CUTADAPT_eroor}
+docker compose -f $COMPOSE_YAML run --rm --user "$(id -u):$(id -g)" amplymate bash /data/_SCRIPTS/02_TRIMMING.sh  -f ${SCRIPT_PATH}/FWD.fasta -e ${CUTADAPT_eroor}
+docker compose -f $COMPOSE_YAML run --rm --user "$(id -u):$(id -g)" amplymate Rscript /data/_SCRIPTS/03_FILTERING.R
+docker compose -f $COMPOSE_YAML run --rm --user "$(id -u):$(id -g)" amplymate Rscript /data/_SCRIPTS/04_DENOISING.R
+docker compose -f $COMPOSE_YAML run --rm --user "$(id -u):$(id -g)" amplymate Rscript /data/_SCRIPTS/05_ANNOTATION.R
+docker compose -f $COMPOSE_YAML run --rm --user "$(id -u):$(id -g)" amplymate Rscript /data/_SCRIPTS/06_CLUSTERING_ASV.R

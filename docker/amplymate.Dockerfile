@@ -73,7 +73,7 @@ RUN wget -O vsearch.tar.gz \
     && rm -rf vsearch-${VSEARCH} vsearch.tar.gz
 
 RUN R -q -e "install.packages(c('tidyverse','BiocManager','optparse'), repos='https://cloud.r-project.org', Ncpus = parallel::detectCores())"
-RUN R -q -e "BiocManager::install( c('dada2','seqinr','Biostrings','ShortRead', 'doParallel'), version='$BIOC')"
+RUN R -q -e "BiocManager::install( c('dada2','seqinr','Biostrings','ShortRead', 'doParallel'), version='$BIOC', Ncpus = parallel::detectCores())"
 
 RUN wget -O seqkit.tar.gz \
 	https://github.com/shenwei356/seqkit/releases/download/v${SEQKIT}/seqkit_linux_amd64.tar.gz \
