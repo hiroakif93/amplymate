@@ -1,0 +1,12 @@
+CUTADAPT:
+  MISMATCH_RATE: 0.4
+
+FILTERING:
+  MIN_LEN: 100
+  TRUNC_R_fwd: 270
+  TRUNC_R_rev: 250
+  MAX_EE: 2
+  MINQ: 10
+
+ANNOTATION:
+  REFERENCE: silva_nr99_v138.2_toGenus_trainset.fa.gz

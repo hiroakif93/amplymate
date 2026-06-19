@@ -1,5 +1,5 @@
 # Amplicon analysis mate
-This repository provide a pipeline analysing Miseq/Miseq i100 outputs.
+This repository provides a pipeline for analyzing MiSeq/MiSeq i100 outputs.
 **This repo is STILL in DEVELOPMENT**
 
 ## Requirements
@@ -9,14 +9,15 @@ This repository provide a pipeline analysing Miseq/Miseq i100 outputs.
 ### Build Docker image
 ```
 # Change directory to ampymate, then
-UID=$(id -u) GID=$(id -g) docker compose -f $COMPOSE_YAML build
+UID=$(id -u) GID=$(id -g) docker compose -f docker/amplymate_v1.0.yaml build
 ```
+Do not forget to add the UID and GID, as file permissions are restricted without these prefixes.
 
-###　Perform programs
+### Perform Programs
 There are three ways to perform programs.
 
-1. Run w/o entering to docker conteiner.
-e.g. Run Cutadapt.
+1. Run without entering the Docker container.
+For example, to run Cutadapt.
 ```
 docker compose -f $COMPOSE_YAML \
   run --rm --user "$(id -u):$(id -g)" amplymate \
