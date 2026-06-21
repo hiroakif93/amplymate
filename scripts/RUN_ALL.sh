@@ -1,3 +1,5 @@
+#!/bin/bash
+cd "$(dirname "$0")"
 
 MOUNT_PATH="$(pwd)"
 SCRIPT_PATH="$(pwd)/scripts"

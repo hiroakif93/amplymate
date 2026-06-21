@@ -2,13 +2,13 @@
 # %% CONFIG
 FWD_P="$SCRIPT_PATH/FWD.fasta"
 REV_P="$SCRIPT_PATH/REV.fasta"
-SEQ_IDENT=0.2
+MISMATCH_rate=${MISMATCH_rate}
 
 while getopts "f:r:e:" opt; do
   case "$opt" in
     f) FWD_P="$OPTARG" ;;
     r) REV_P="$OPTARG" ;;
-    e) SEQ_IDENT="$OPTARG" ;;
+    e) MISMATCH_rate="$OPTARG" ;;
   esac
 done
 
@@ -17,7 +17,6 @@ DEMUX_BY_PRIMER="${DEMUX_BY_PRIMER}"
 EVAL_SUMMARY=${EVAL_SUMMARY}
 EVAL_DEMUX=${EVAL_DEMUX}
 WORKDIR=${BASE_PATH}/_tmp
-THREAD=1
 JOBS=$THREADS
 
 # %% MAIN
@@ -46,7 +45,7 @@ demux_by_primer() {
     if [ -f "$r2" ]; then
         cutadapt \
           --nextseq-trim 0 -j "$THREAD" \
-          -e $SEQ_IDENT -n 3 --max-n 0 \
+          -e $MISMATCH_rate -n 3 --max-n 0 \
           -g file:${FWD_P} \
           -G file:${REV_P} \
           -o "${DEMUX_BY_PRIMER}/${base}${SUFFIX_fwd}" \
@@ -57,8 +56,8 @@ demux_by_primer() {
           > "$log" 2>&1
     else
         cutadapt \
-          --nextseq-trim 0 -j "$THREAD" \
-          -e $SEQ_IDENT -n 2 --max-n 0 --report minimal --revcomp \
+          --nextseq-trim 0 -j 1 \
+          -e $MISMATCH_rate -n 2 --max-n 0 --report minimal --revcomp \
           -g file:${FWD_P} \
           -o "${DEMUX_BY_PRIMER}/${base}${SUFFIX_fwd}" \
           --untrimmed-output "${DEMUX_BY_PRIMER}/unmatched_${base}.fastq.gz" \
@@ -69,9 +68,7 @@ demux_by_primer() {
 
 ## To pass cluster
 export -f demux_by_primer
-export THREAD
-export DEMUX_BY_PRIMER EVAL_DEMUX WORKDIR
-export FWD_P REV_P SEQ_IDENT
+export FWD_P REV_P
 export SUFFIX_fwd SUFFIX_rev
 
 find "$RAW_FASTQ" -maxdepth 1 -name '*_R1_*.fastq.gz' -print0 | parallel -0 -j $JOBS demux_by_primer {}

@@ -3,8 +3,30 @@ services:
     image: amplymate_v1.0
 
     environment:
+      # Sequence mismatch in cutadapt
       MISMATCH_rate: 0.2
+      # Quality control
+      MIN_LEN: 100
+      MAXEE: 2
+      TRUNCLEN: 240
+      TRUNCLEN2: 210
+      MINQ: 10
+      # Reference database to annotate taxonomy
+      REF_DB: '{
+        "515f":"silva",
+        "its":"unite"
+        }'
+      # OTU level
+      MAX_th: 1
+      MIN_th: 0.96
+      BY: 0.02
+      # Filtering taxonomy
+      TARGET_TAXA: '{
+        "515f":["Bacteria", "Archea"],
+        "its":"Fungi"
+        }'
 
+      # Output directory name in container
       SCRIPT_PATH: /_SCRIPTS
       BASE_PATH: "/data"
       RAW_FASTQ: "/data/BCLConvert/fastq"
