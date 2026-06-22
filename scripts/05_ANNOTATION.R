@@ -1,6 +1,7 @@
 # %% Configs
 
-REFERENCE="/db/silva_nr99_v138.2_toGenus_trainset.fa.gz"
+REF_PATH=Sys.getenv("GENOME_DB")
+REFERENCE = jsonlite::fromJSON(Sys.getenv("REF_DB"))[[1]]
 REFERENCE_ADD_SP="/db/silva_v138.2_assignSpecies.fa.gz"
 
 # %% MAIN
@@ -19,7 +20,7 @@ cols = colnames(seqtab)
 seqfasta = read.fasta(sprintf("%s/nonchim_seq.fasta",INPUT))
 
 seqlist <- sapply(seqfasta, paste, collapse="")
-taxa <- assignTaxonomy(seqlist, REFERENCE, multithread=TRUE)
+taxa <- assignTaxonomy(seqlist, paste0(REF_PATH, "/",REFERENCE), multithread=TRUE)
 if(str_detect(REFERENCE, "silva") & !all(colnames(taxa)=="Species")) taxa <- addSpecies(taxa, REFERENCE_ADD_SP)
 
 taxa.print <- cbind(ASV=names(seqlist),taxa)  # Removing sequence rownames for display only

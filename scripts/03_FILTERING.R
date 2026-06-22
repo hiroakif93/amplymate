@@ -1,9 +1,9 @@
 # %% CONFIGS
-MIN_LEN <- 100
-MAXEE <- 2
-TRUNCLEN <- 0
-TRUNCLEN2 <- 0
-MINQ <- 10
+MIN_LEN <- jsonlite::fromJSON(Sys.getenv("MIN_LEN"))
+MAXEE <- jsonlite::fromJSON(Sys.getenv("MAXEE"))
+TRUNCLEN <- jsonlite::fromJSON(Sys.getenv("TRUNCLEN"))
+TRUNCLEN2 <- jsonlite::fromJSON(Sys.getenv("TRUNCLEN2"))
+MINQ <- jsonlite::fromJSON(Sys.getenv("MINQ"))
 
 library(dada2)
 library(stringr)

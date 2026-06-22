@@ -4,10 +4,10 @@ FWD_P=${FWD_P}
 REV_P=${REV_P}
 MISMATCH_rate=${MISMATCH_rate}
 
-RAW_FASTQ="${BASE_PATH}/DEMUX"
+RAW_FASTQ="${RAW_FASTQ}"
 EVAL_SUMMARY=${EVAL_SUMMARY}
-export DEMUX_BY_PRIMER="${DEMUX_BY_PRIMER}"
-export EVAL_DEMUX=${EVAL_DEMUX}
+DEMUX_BY_PRIMER="${DEMUX_BY_PRIMER}"
+EVAL_DEMUX=${EVAL_DEMUX}
 WORKDIR=${BASE_PATH}/_tmp
 JOBS=$THREADS
 
@@ -58,8 +58,9 @@ demux_by_primer() {
     fi
 }
 
-## To pass cluster
+## Pass to demux_by_primer
 export -f demux_by_primer
+export DEMUX_BY_PRIMER EVAL_DEMUX WORKDIR
 export FWD_P REV_P
 export SUFFIX_fwd SUFFIX_rev
 

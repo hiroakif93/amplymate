@@ -16,9 +16,10 @@ services:
       TRUNCLEN2: 210
       MINQ: 10
       # Reference database to annotate taxonomy
+      PRIMER: ${PRIMER:-515f}
       REF_DB: '{
-        "515f":"silva",
-        "its":"unite"
+        \"515f\": \"silva_nr99_v138.2_toGenus_trainset.fa.gz\",
+        \"its\": \"sh_general_release_19.02.2025.tgz\"
         }'
       # OTU level
       MAX_th: 1
@@ -26,14 +27,14 @@ services:
       BY: 0.02
       # Filtering taxonomy
       TARGET_TAXA: '{
-        "515f":["Bacteria", "Archea"],
-        "its":"Fungi"
+        \"515f\":[\"Bacteria\", \"Archea\"],
+        \"its\":\"Fungi\"
         }'
 
       # Output directory name in container
       SCRIPT_PATH: /_SCRIPTS
       BASE_PATH: "/data"
-      RAW_FASTQ: "/data/BCLConvert/fastq"
+      RAW_FASTQ: "/data/DEMUX"
       DEMUX_BY_PRIMER: "/data/01_DEMUX_BY_PRIMER"
       TRIMMING: "/data/02_TRIMMING"
       QUALITY_CONTROL: "/data/03_FILT_SEQ"

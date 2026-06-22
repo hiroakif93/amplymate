@@ -1,8 +1,8 @@
 #!/bin/bash
 
-export MOUNT_PATH="/home/user/miseq_output"
-export SCRIPT_PATH="./scripts"
-export COMPOSE_YAML="./docker/amplymate_v1.0.yaml"
+export MOUNT_PATH="$(pwd)"
+export SCRIPT_PATH="$(pwd)/scripts"
+export COMPOSE_YAML="$(pwd)/amplymate_v1.0.yaml"
 
 if [ "$(docker compose -f "$COMPOSE_YAML" ps --status running -q "$SERVICE")" ]; then
   docker compose -f "$COMPOSE_YAML" down
