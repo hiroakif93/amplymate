@@ -8,13 +8,18 @@ GENOME_DB="$HOME/db"
 
 export MOUNT_PATH SCRIPT_PATH GENOME_DB
 
-docker compose -f $COMPOSE_YAML run --rm --user "$(id -u):$(id -g)" amplymate bash /_SCRIPTS/01_CUTADAPT.sh
-docker compose -f $COMPOSE_YAML run --rm --user "$(id -u):$(id -g)" amplymate bash /_SCRIPTS/02_TRIMMING.sh
-docker compose -f $COMPOSE_YAML run --rm --user "$(id -u):$(id -g)" amplymate Rscript /_SCRIPTS/03_FILTERING.R
-docker compose -f $COMPOSE_YAML run --rm --user "$(id -u):$(id -g)" amplymate Rscript /_SCRIPTS/04_DENOISING.R
-docker compose -f $COMPOSE_YAML run --rm --user "$(id -u):$(id -g)" amplymate Rscript /_SCRIPTS/05_ANNOTATION.R
-docker compose -f $COMPOSE_YAML run --rm --user "$(id -u):$(id -g)" amplymate Rscript /_SCRIPTS/06_CLUSTERING_ASV.R
+while true
+do
+    read -r f1 <&3 || break
+    read -r f2 <&3 || break
 
+    docker compose -f $COMPOSE_YAML run --rm --user "$(id -u):$(id -g)" amplymate bash /_SCRIPTS/01_CUTADAPT.sh
+    docker compose -f $COMPOSE_YAML run --rm --user "$(id -u):$(id -g)" amplymate bash /_SCRIPTS/02_TRIMMING.sh
+    docker compose -f $COMPOSE_YAML run --rm --user "$(id -u):$(id -g)" amplymate Rscript /_SCRIPTS/03_FILTERING.R
+    docker compose -f $COMPOSE_YAML run --rm --user "$(id -u):$(id -g)" amplymate Rscript /_SCRIPTS/04_DENOISING.R
+    docker compose -f $COMPOSE_YAML run --rm --user "$(id -u):$(id -g)" amplymate Rscript /_SCRIPTS/05_ANNOTATION.R
+    docker compose -f $COMPOSE_YAML run --rm --user "$(id -u):$(id -g)" amplymate Rscript /_SCRIPTS/06_CLUSTERING_ASV.R
+done 3<"./scripts/FWD.fasta" 4<",.scripts/REV.fasta"
 
 # Write out program/package versions
 docker compose -f $COMPOSE_YAML run --rm --user "$(id -u):$(id -g)" amplymate bash -lc '
