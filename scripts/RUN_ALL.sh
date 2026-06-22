@@ -14,3 +14,19 @@ docker compose -f $COMPOSE_YAML run --rm --user "$(id -u):$(id -g)" amplymate Rs
 docker compose -f $COMPOSE_YAML run --rm --user "$(id -u):$(id -g)" amplymate Rscript /data/_SCRIPTS/04_DENOISING.R
 docker compose -f $COMPOSE_YAML run --rm --user "$(id -u):$(id -g)" amplymate Rscript /data/_SCRIPTS/05_ANNOTATION.R
 docker compose -f $COMPOSE_YAML run --rm --user "$(id -u):$(id -g)" amplymate Rscript /data/_SCRIPTS/06_CLUSTERING_ASV.R
+
+
+# Write out program/package versions
+docker compose -f $COMPOSE_YAML run --rm --user "$(id -u):$(id -g)" amplymate bash -lc '
+
+    {
+      printf "R\t%s\n" "$(R --version | head -n 1)"
+      printf "cutadapt\t%s\n" "$(cutadapt --version)"
+      printf "multiqc\t%s\n" "$(multiqc --version)"
+      printf "vsearch\t%s\n" "$(vsearch --version 2>&1 | head -n 1)"
+      printf "seqkit\t%s\n" "$(seqkit version 2>&1 | head -n 1)"
+      printf "fastqc\t%s\n" "$(fastqc --version 2>&1 | head -n 1)"
+
+      Rscript -e '\''pkgs <- c("dada2","seqinr"); cat(paste(pkgs, sapply(pkgs, \(p) as.character(packageVersion(p))), sep="\t"), sep="\n")'\''
+    } > /data/program_versions.tsv
+  '
