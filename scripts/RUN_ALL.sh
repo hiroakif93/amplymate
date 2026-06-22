@@ -15,7 +15,6 @@ docker compose -f $COMPOSE_YAML run --rm --user "$(id -u):$(id -g)" amplymate Rs
 docker compose -f $COMPOSE_YAML run --rm --user "$(id -u):$(id -g)" amplymate Rscript /_SCRIPTS/05_ANNOTATION.R
 docker compose -f $COMPOSE_YAML run --rm --user "$(id -u):$(id -g)" amplymate Rscript /_SCRIPTS/06_CLUSTERING_ASV.R
 
-
 # Write out program/package versions
 docker compose -f $COMPOSE_YAML run --rm --user "$(id -u):$(id -g)" amplymate bash -lc '
 
