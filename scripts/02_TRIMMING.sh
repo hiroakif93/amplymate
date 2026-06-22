@@ -34,7 +34,7 @@ trimming_seq() {
     out_r1=$(basename "$r1")
     out_r2=$(basename "$r2")
 
-    base=${out_r1%%_fwd}
+    base=${out_r1%%_fwd*}
 	log="${WORKDIR}/${base}.log"
 
 	if [ -f $r2 ];then
@@ -59,7 +59,7 @@ trimming_seq() {
 }
 
 export -f trimming_seq
-export THREAD
+export THREAD WORKDIR
 export REPLACE SUFFIX
 
 find "$DEMUX_BY_PRIMER" -maxdepth 1 -name '*_fwd_DEMUX_*.fastq.gz' ! -name '*unmatch*' -print0 | parallel -0 -j $JOBS trimming_seq {}

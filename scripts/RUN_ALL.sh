@@ -19,7 +19,7 @@ docker compose -f $COMPOSE_YAML run --rm --user "$(id -u):$(id -g)" amplymate Rs
 docker compose -f $COMPOSE_YAML run --rm --user "$(id -u):$(id -g)" amplymate bash -lc '
 
     {
-      printf "R\t%s\n" "$(R --version | head -n 1)"
+      printf "%s\n" "$(R --version | head -n 1)"
       printf "cutadapt\t%s\n" "$(cutadapt --version)"
       printf "multiqc\t%s\n" "$(multiqc --version)"
       printf "vsearch\t%s\n" "$(vsearch --version 2>&1 | head -n 1)"
