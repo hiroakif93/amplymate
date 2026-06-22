@@ -3,7 +3,7 @@
 FWD_P=${FWD_P}
 REV_P=${REV_P}
 REMOVE_SEQ=${REMOVE_SEQ}
-MISMATCH_rate=${MISMATCH_rate}
+ADAPRTOR_MISMATCH=${ADAPRTOR_MISMATCH}
 
 DEMUX_BY_PRIMER="${DEMUX_BY_PRIMER}"
 TRIMMING="${TRIMMING}"
@@ -40,7 +40,7 @@ trimming_seq() {
 	if [ -f $r2 ];then
 		cutadapt \
 		  --nextseq-trim 0 -j $THREAD \
-		  -e $MISMATCH_rate -n 20 --report minimal --revcomp \
+		  -e $ADAPRTOR_MISMATCH -n 20 --report minimal --revcomp \
 		  -a file:$REV_P -A file:$FWD_P \
 		  -b file:${REMOVE_SEQ} -B file:${REMOVE_SEQ} \
 		  -o ${TRIMMING}/${out_r1/$REPLACE/$SUFFIX} -p ${TRIMMING}/${out_r2/$REPLACE/$SUFFIX}  \
@@ -49,7 +49,7 @@ trimming_seq() {
 	else
 		cutadapt \
 		  --nextseq-trim 0 -j $THREAD \
-		  -e $MISMATCH_rate -n 20 --report minimal --revcomp \
+		  -e $ADAPRTOR_MISMATCH -n 20 --report minimal --revcomp \
 		  -a file:$REV_P \
 		  -b file:${REMOVE_SEQ} \
 		  -o ${TRIMMING}/${out_r1/$REPLACE/$SUFFIX} \

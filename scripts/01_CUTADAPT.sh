@@ -2,7 +2,7 @@
 # %% CONFIG
 FWD_P=${FWD_P}
 REV_P=${REV_P}
-MISMATCH_rate=${MISMATCH_rate}
+PRIMER_MISMATCH=${PRIMER_MISMATCH}
 
 RAW_FASTQ="${RAW_FASTQ}"
 EVAL_SUMMARY=${EVAL_SUMMARY}
@@ -37,7 +37,7 @@ demux_by_primer() {
     if [ -f "$r2" ]; then
         cutadapt \
           --nextseq-trim 0 -j "$THREAD" \
-          -e $MISMATCH_rate -n 3 --max-n 0 \
+          -e $PRIMER_MISMATCH -n 3 --max-n 0 \
           -g file:${FWD_P} \
           -G file:${REV_P} \
           -o "${DEMUX_BY_PRIMER}/${base}${SUFFIX_fwd}" \
@@ -49,7 +49,7 @@ demux_by_primer() {
     else
         cutadapt \
           --nextseq-trim 0 -j 1 \
-          -e $MISMATCH_rate -n 2 --max-n 0 --report minimal --revcomp \
+          -e $PRIMER_MISMATCH -n 2 --max-n 0 --report minimal --revcomp \
           -g file:${FWD_P} \
           -o "${DEMUX_BY_PRIMER}/${base}${SUFFIX_fwd}" \
           --untrimmed-output "${DEMUX_BY_PRIMER}/unmatched_${base}.fastq.gz" \

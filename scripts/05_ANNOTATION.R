@@ -1,6 +1,6 @@
 # %% Configs
 
-REF_PATH=Sys.getenv("GENOME_DB")
+REF_PATH="/db"
 REFERENCE = jsonlite::fromJSON(Sys.getenv("REF_DB"))[[1]]
 REFERENCE_ADD_SP="/db/silva_v138.2_assignSpecies.fa.gz"
 

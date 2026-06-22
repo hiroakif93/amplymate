@@ -4,7 +4,7 @@ services:
 
     environment:
       # Sequence mismatch in cutadapt
-      PRIMER_MISMATCH_rate: 0.4
+      PRIMER_MISMATCH: 0.4
       ADAPRTOR_MISMATCH: 0.2
       FWD_P: /_SCRIPTS/FWD.fasta
       REV_P: /_SCRIPTS/REV.fasta
@@ -19,8 +19,8 @@ services:
       # Reference database to annotate taxonomy
       PRIMER: ${PRIMER:-515f}
       REF_DB: '{
-        \"515f\": \"silva_nr99_v138.2_toGenus_trainset.fa.gz\",
-        \"its\": \"sh_general_release_19.02.2025.tgz\"
+          "515f":"silva_nr99_v138.2_toGenus_trainset.fa.gz",
+          "its":"sh_general_release_19.02.2025.tgz"
         }'
       # OTU level
       MAX_th: 1
@@ -28,8 +28,8 @@ services:
       BY: 0.02
       # Filtering taxonomy
       TARGET_TAXA: '{
-        \"515f\":[\"Bacteria\", \"Archea\"],
-        \"its\":\"Fungi\"
+          "515f":["Bacteria", "Archea"],
+          "its":"Fungi"
         }'
 
       # Output directory name in container
