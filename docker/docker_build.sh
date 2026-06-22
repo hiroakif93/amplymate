@@ -1,4 +1,4 @@
-COMPOSE_YAML="$HOME/amplymate/docker/amplymate_v1.0.yaml"
+COMPOSE_YAML="$(pwd)/amplymate_v1.0.yaml"
 
 while getopts "y:" opt; do
   case "$opt" in

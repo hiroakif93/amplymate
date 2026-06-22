@@ -1,7 +1,8 @@
 # %% CONFIGS
 library(dada2)
 library(seqinr)
-library(tidyverse)
+library(purrr)
+library(stringr)
 
 INPUT <- Sys.getenv("QUALITY_CONTROL")
 OUTPUT <- Sys.getenv("DENOISING")

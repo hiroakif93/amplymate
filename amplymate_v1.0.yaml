@@ -4,7 +4,8 @@ services:
 
     environment:
       # Sequence mismatch in cutadapt
-      MISMATCH_rate: 0.2
+      PRIMER_MISMATCH_rate: 0.4
+      ADAPRTOR_MISMATCH: 0.2
       FWD_P: /_SCRIPTS/FWD.fasta
       REV_P: /_SCRIPTS/REV.fasta
       REMOVE_SEQ: /_SCRIPTS/REMOVE.fasta

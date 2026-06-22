@@ -62,7 +62,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     default-jre-headless \
     pipx python3-venv \
     libgomp1 \
-    zlib1g libbz2-1.0 liblzma5 \
+    zlib1g zlib1g-dev libbz2-1.0 liblzma5 \
     libcurl4 \
     && rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
 

@@ -51,7 +51,7 @@ trimming_seq() {
 		  --nextseq-trim 0 -j $THREAD \
 		  -e $MISMATCH_rate -n 20 --report minimal --revcomp \
 		  -a file:$REV_P \
-		  -b file:${REMOVE_SEQ} -B file:${REMOVE_SEQ} \
+		  -b file:${REMOVE_SEQ} \
 		  -o ${TRIMMING}/${out_r1/$REPLACE/$SUFFIX} \
 		  $r1  \
           > "$log" 2>&1
@@ -65,7 +65,7 @@ export REPLACE SUFFIX
 find "$DEMUX_BY_PRIMER" -maxdepth 1 -name '*_fwd_DEMUX_*.fastq.gz' ! -name '*unmatch*' -print0 | parallel -0 -j $JOBS trimming_seq {}
 
 # Evaluate result
-fastqc ${TRIMMING}/*_TRIM*.fastq.gz --quiet -t ${THREAD}
+fastqc ${TRIMMING}/*_TRIM*.fastq.gz --quiet -t ${JOBS}
 multiqc --outdir  ${EVAL_TRIMMING} --ignore-samples unmatch* ${TRIMMING} --force
 seqkit stats -T ${TRIMMING}/*.fastq.gz -o ${EVAL_TRIMMING}/seqkit.tsv
 
