@@ -29,8 +29,8 @@ RUN wget -O vsearch.tar.gz \
     && cd ../ \
     && rm -rf vsearch-${VSEARCH} vsearch.tar.gz
 
-RUN R -q -e "install.packages(c('tidyverse','BiocManager','jsonlite'), repos='https://cloud.r-project.org', Ncpus = parallel::detectCores())" \
-    && R -q -e "BiocManager::install( c('dada2','seqinr','Biostrings','ShortRead', 'doParallel'), version='$BIOC', Ncpus = parallel::detectCores())"
+RUN R -q -e "install.packages(c('dplyr', 'stringr', 'purrr', 'ggplot2', 'BiocManager','jsonlite', 'doParallel'), repos='https://cloud.r-project.org', Ncpus = parallel::detectCores(), INSTALL_opts = c('--strip','--no-docs','--no-help','--no-demo','--no-html'))" \
+    && R -q -e "BiocManager::install( c('dada2','seqinr','Biostrings','ShortRead'), version='$BIOC', Ncpus = parallel::detectCores(), INSTALL_opts = c('--strip','--no-docs','--no-demo','--no-html'))"
 
 RUN wget -O seqkit.tar.gz \
 	https://github.com/shenwei356/seqkit/releases/download/v${SEQKIT}/seqkit_linux_amd64.tar.gz \
@@ -72,11 +72,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libpng16-16 libtiff6 libjpeg-turbo8 libwebp7 libwebpmux3 \
     libcairo2 libgit2-1.7 libsqlite3-0 libssh2-1 \
     libpq5 libmariadb3 libsasl2-2 libodbc2 libxtst6 \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
 
 RUN pipx ensurepath \
-    && pipx install cutadapt=="v${CUTADAPT}" \
-    && pipx install multiqc
+    && pipx install --pip-args "--no-cache-dir" cutadapt=="v${CUTADAPT}" \
+    && pipx install --pip-args "--no-cache-dir" multiqc \
+    && rm -rf /root/.cache /tmp/* /var/tmp/*
 
 COPY --from=builder /usr/local/bin/vsearch          /usr/local/bin/vsearch
 COPY --from=builder /usr/local/bin/seqkit           /usr/local/bin/seqkit
@@ -88,7 +89,7 @@ RUN ln -sf /opt/FastQC/fastqc /usr/local/bin/fastqc
 
 RUN apt-get install -y --no-install-recommends /tmp/parallel.deb \
     && rm -f /tmp/parallel.deb \
-    && rm -rf /var/lib/apt/lists/* \
+    && rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/* \
     && mkdir -p /root/.parallel && touch /root/.parallel/will-cite
 
 RUN mkdir -p /root/.parallel && \
