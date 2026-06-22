@@ -114,7 +114,7 @@ RUN { \
       echo "vsearch	$(vsearch --version 2>&1 | head -n 1)"; \
       echo "seqkit	$(seqkit version 2>&1 | head -n 1)"; \
       echo "fastqc	$(fastqc --version 2>&1 | head -n 1)"; \
-      Rscript -e 'pkgs <- c("tidyverse", "dada2","seqinr"); cat(paste(pkgs, sapply(pkgs, \(p) as.character(packageVersion(p))), sep="\t"), sep="\n")'; \
+      Rscript -e 'pkgs <- c("dada2","seqinr"); cat(paste(pkgs, sapply(pkgs, \(p) as.character(packageVersion(p))), sep="\t"), sep="\n")'; \
     } > /_SCRIPTS/program_versions.tsv
 
 USER root
