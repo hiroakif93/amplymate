@@ -54,7 +54,7 @@ file_names <- map(file_names, ~ .x[!str_detect(.x, "Undetermined")])
 qscores <- lapply(file_names, function(fs) {
   if (length(fs) > 0) {
     qchar <- uniq_qual_chars(fs)
-    return(sort(utf8ToInt(paste0(qchars, collapse = "")) - 33))
+    return(sort(utf8ToInt(paste0(qchar, collapse = "")) - 33))
   }
 })
 

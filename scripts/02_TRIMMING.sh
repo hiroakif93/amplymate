@@ -1,16 +1,9 @@
 #!/bin/bash
 # %% CONFIG
-FWD_P="$SCRIPT_PATH/FWD.fasta"
-REV_P="$SCRIPT_PATH/REV.fasta"
-SEQ_IDENT=0.2
-
-while getopts "f:r:e:" opt; do
-  case "$opt" in
-    f) FWD_P="$OPTARG" ;;
-    r) REV_P="$OPTARG" ;;
-    e) SEQ_IDENT="$OPTARG" ;;
-  esac
-done
+FWD_P=${FWD_P}
+REV_P=${REV_P}
+REMOVE_SEQ=${REMOVE_SEQ}
+MISMATCH_rate=${MISMATCH_rate}
 
 DEMUX_BY_PRIMER="${DEMUX_BY_PRIMER}"
 TRIMMING="${TRIMMING}"
@@ -47,20 +40,18 @@ trimming_seq() {
 	if [ -f $r2 ];then
 		cutadapt \
 		  --nextseq-trim 0 -j $THREAD \
-		  -e $SEQ_IDENT -n 10 --report minimal --revcomp \
-		  -A file:$FWD_P \
-		  -b CTGTCTCTTATACACATCT -b TGGAATTCTCGG -b AGATCGGAAGAG \
-		  -b TCGTCGGCAGCGTCAGATGTGTATAAGAGACAG -b GTCTCGTGGGCTCGGAGATGTGTATAAGAGACAG \
+		  -e $MISMATCH_rate -n 20 --report minimal --revcomp \
+		  -a file:$REV_P -A file:$FWD_P \
+		  -b file:${REMOVE_SEQ} -B file:${REMOVE_SEQ} \
 		  -o ${TRIMMING}/${out_r1/$REPLACE/$SUFFIX} -p ${TRIMMING}/${out_r2/$REPLACE/$SUFFIX}  \
 		  $r1 $r2 \
           > "$log" 2>&1
 	else
 		cutadapt \
 		  --nextseq-trim 0 -j $THREAD \
-		  -e $SEQ_IDENT -n 5 --report minimal --revcomp \
+		  -e $MISMATCH_rate -n 20 --report minimal --revcomp \
 		  -a file:$REV_P \
-		  -b CTGTCTCTTATACACATCT -b TGGAATTCTCGG -b AGATCGGAAGAG \
-		  -b TCGTCGGCAGCGTCAGATGTGTATAAGAGACAG -b GTCTCGTGGGCTCGGAGATGTGTATAAGAGACAG \
+		  -b file:${REMOVE_SEQ} -B file:${REMOVE_SEQ} \
 		  -o ${TRIMMING}/${out_r1/$REPLACE/$SUFFIX} \
 		  $r1  \
           > "$log" 2>&1
@@ -69,8 +60,6 @@ trimming_seq() {
 
 export -f trimming_seq
 export THREAD
-export TRIMMING EVAL_TRIMMING WORKDIR
-export FWD_P REV_P SEQ_IDENT
 export REPLACE SUFFIX
 
 find "$DEMUX_BY_PRIMER" -maxdepth 1 -name '*_fwd_DEMUX_*.fastq.gz' ! -name '*unmatch*' -print0 | parallel -0 -j $JOBS trimming_seq {}

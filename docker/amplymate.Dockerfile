@@ -1,65 +1,22 @@
-# Versions in programs
-ARG R
-FROM rocker/rstudio:4.5.3
+# Build base
+FROM rocker/rstudio:4.5.3　AS builder
 
 ARG VSEARCH
-ARG CUTADAPT
 ARG BIOC
 ARG SEQKIT
 ARG FASTQC
+ENV DEBIAN_FRONTEND=noninteractive
 
-ARG UID=1000
-ARG GID=1000
-
-# Setting environment
-ENV DEBIAN_FRONTEND=noninteractive \
-    PIPX_HOME=/opt/pipx \
-    PIPX_BIN_DIR=/usr/local/bin \
-    PATH="$PATH:/root/.local/bin:/home/docker/.local/bin:/usr/local/bin"
-
-# Install programs
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    git \
-    curl \
-    wget \
-    ca-certificates \
-    build-essential \
-    pkg-config \
-    default-jre \
-    libcurl4-openssl-dev \
-    libssl-dev \
-    libxml2-dev \
-    libfontconfig1-dev \
-    libharfbuzz-dev \
-    libfribidi-dev \
-    libfreetype6-dev \
-    libpng-dev \
-    libtiff5-dev \
-    libjpeg-dev \
-    zlib1g-dev \
-    pipx \
-    python3-venv \
-    perl \
-    autoconf \
-    automake \
-    libtool \
-    libcairo2-dev \
-    libgit2-dev \
-    default-libmysqlclient-dev \
-    libpq-dev \
-    libsasl2-dev \
-    libsqlite3-dev \
-    libssh2-1-dev \
-    libxtst6 \
-    unixodbc-dev \
-    libuv1-dev \
-    xz-utils \
-    && apt-get clean \
+    ca-certificates wget unzip \
+    build-essential pkg-config autoconf automake libtool \
+    zlib1g-dev libbz2-dev liblzma-dev \
+    libcurl4-openssl-dev libssl-dev libxml2-dev \
+    libfontconfig1-dev libharfbuzz-dev libfribidi-dev \
+    libfreetype6-dev libpng-dev libtiff5-dev libjpeg-dev \
+    libcairo2-dev libgit2-dev libsqlite3-dev libssh2-1-dev \
+    default-libmysqlclient-dev libpq-dev libsasl2-dev unixodbc-dev \
     && rm -rf /var/lib/apt/lists/*
-
-RUN pipx ensurepath \
-    && pipx install cutadapt=="v${CUTADAPT}" \
-    && pipx install multiqc
 
 RUN wget -O vsearch.tar.gz \
     https://github.com/torognes/vsearch/archive/v${VSEARCH}.tar.gz \
@@ -72,31 +29,79 @@ RUN wget -O vsearch.tar.gz \
     && cd ../ \
     && rm -rf vsearch-${VSEARCH} vsearch.tar.gz
 
-RUN R -q -e "install.packages(c('tidyverse','BiocManager','jsonlite'), repos='https://cloud.r-project.org', Ncpus = parallel::detectCores())"
-RUN R -q -e "BiocManager::install( c('dada2','seqinr','Biostrings','ShortRead', 'doParallel'), version='$BIOC', Ncpus = parallel::detectCores())"
+RUN R -q -e "install.packages(c('tidyverse','BiocManager','jsonlite'), repos='https://cloud.r-project.org', Ncpus = parallel::detectCores())" \
+    && R -q -e "BiocManager::install( c('dada2','seqinr','Biostrings','ShortRead', 'doParallel'), version='$BIOC', Ncpus = parallel::detectCores())" \
+    && find /usr/local/lib/R/site-library -name '*.so' -exec strip --strip-unneeded {} + || true \
+    && find /usr/local/lib/R/site-library -type d \
+        \( -o -name doc -o -name html -o -name tests -o -name examples \) \
+        -prune -exec rm -rf {} +
 
 RUN wget -O seqkit.tar.gz \
 	https://github.com/shenwei356/seqkit/releases/download/v${SEQKIT}/seqkit_linux_amd64.tar.gz \
 	&& tar xzf seqkit.tar.gz \
-	&& mv seqkit /usr/local/bin/
+	&& mv seqkit /usr/local/bin/ \
+    && rm -rf seqkit.tar.gz
 
 RUN wget -O fastqc.zip \
 	https://www.bioinformatics.babraham.ac.uk/projects/fastqc/fastqc_v${FASTQC}.zip \
 	&& unzip fastqc.zip -d /opt \
 	&& ln -sf /opt/FastQC/fastqc /usr/local/bin/fastqc \
-	&& rm -rf FastQC
+	&& rm -rf FastQC fastqc.zip
 
-RUN wget \
-    https://download.opensuse.org/repositories/home:/tange/Debian_10/all/parallel_20260522_all.deb \
-    && apt install ./parallel_20260522_all.deb \
-    && rm -f parallel_20260522_all.deb
+RUN wget -O /opt/parallel.deb \
+      https://download.opensuse.org/repositories/home:/tange/Debian_10/all/parallel_20260522_all.deb
+
+#
+FROM rocker/rstudio:4.5.3
+
+ARG CUTADAPT
+ARG UID=1000
+ARG GID=1000
+
+# Setting environment
+ENV DEBIAN_FRONTEND=noninteractive \
+    PIPX_HOME=/opt/pipx \
+    PIPX_BIN_DIR=/usr/local/bin \
+    PATH="$PATH:/root/.local/bin:/home/docker/.local/bin:/usr/local/bin"
+
+# Install programs
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ca-certificates perl \
+    default-jre-headless \
+    pipx python3-venv \
+    libgomp1 \
+    zlib1g libbz2-1.0 liblzma5 \
+    libcurl4 libssl3 libxml2 \
+    libfontconfig1 libharfbuzz0b libfribidi0 libfreetype6 \
+    libpng16-16 libtiff6 libjpeg-turbo8 \
+    libcairo2 libgit2-1.7 libsqlite3-0 libssh2-1 \
+    libpq5 libmariadb3 libsasl2-2 libodbc2 libxtst6 \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN pipx ensurepath \
+    && pipx install cutadapt=="v${CUTADAPT}" \
+    && pipx install multiqc
+
+COPY --from=builder /usr/local/bin/vsearch          /usr/local/bin/vsearch
+COPY --from=builder /usr/local/bin/seqkit           /usr/local/bin/seqkit
+COPY --from=builder /opt/FastQC                      /opt/FastQC
+COPY --from=builder /opt/parallel.deb               /tmp/parallel.deb
+COPY --from=builder /usr/local/lib/R/site-library   /usr/local/lib/R/site-library
+
+RUN ln -sf /opt/FastQC/fastqc /usr/local/bin/fastqc
+
+RUN apt-get install -y --no-install-recommends /tmp/parallel.deb \
+    && rm -f /tmp/parallel.deb \
+    && rm -rf /var/lib/apt/lists/* \
+    && mkdir -p /root/.parallel && touch /root/.parallel/will-cite
+
 RUN mkdir -p /root/.parallel && \
     touch /root/.parallel/will-cite
 
 # Setting for Rstudio
-RUN groupmod -g ${GID} rstudio && \
-    usermod -u ${UID} -g ${GID} rstudio
-RUN echo "setwd('/data')" >> /home/rstudio/.Rprofile\
+RUN groupmod -g ${GID} rstudio \
+    && usermod -u ${UID} -g ${GID} rstudio \
+    && echo "setwd('/data')" >> /home/rstudio/.Rprofile\
     && chown "${UID}:${GID}" /home/rstudio/.Rprofile
 
 # Make directroy to mount

@@ -1,21 +1,13 @@
 #!/bin/bash
 # %% CONFIG
-FWD_P="$SCRIPT_PATH/FWD.fasta"
-REV_P="$SCRIPT_PATH/REV.fasta"
+FWD_P=${FWD_P}
+REV_P=${REV_P}
 MISMATCH_rate=${MISMATCH_rate}
 
-while getopts "f:r:e:" opt; do
-  case "$opt" in
-    f) FWD_P="$OPTARG" ;;
-    r) REV_P="$OPTARG" ;;
-    e) MISMATCH_rate="$OPTARG" ;;
-  esac
-done
-
 RAW_FASTQ="${BASE_PATH}/DEMUX"
-DEMUX_BY_PRIMER="${DEMUX_BY_PRIMER}"
 EVAL_SUMMARY=${EVAL_SUMMARY}
-EVAL_DEMUX=${EVAL_DEMUX}
+export DEMUX_BY_PRIMER="${DEMUX_BY_PRIMER}"
+export EVAL_DEMUX=${EVAL_DEMUX}
 WORKDIR=${BASE_PATH}/_tmp
 JOBS=$THREADS
 
