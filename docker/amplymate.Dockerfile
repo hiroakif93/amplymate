@@ -1,5 +1,5 @@
 # Build base
-FROM rocker/rstudio:4.5.3　AS builder
+FROM rocker/rstudio:4.5.3 AS builder
 
 ARG VSEARCH
 ARG BIOC
@@ -30,11 +30,7 @@ RUN wget -O vsearch.tar.gz \
     && rm -rf vsearch-${VSEARCH} vsearch.tar.gz
 
 RUN R -q -e "install.packages(c('tidyverse','BiocManager','jsonlite'), repos='https://cloud.r-project.org', Ncpus = parallel::detectCores())" \
-    && R -q -e "BiocManager::install( c('dada2','seqinr','Biostrings','ShortRead', 'doParallel'), version='$BIOC', Ncpus = parallel::detectCores())" \
-    && find /usr/local/lib/R/site-library -name '*.so' -exec strip --strip-unneeded {} + || true \
-    && find /usr/local/lib/R/site-library -type d \
-        \( -o -name doc -o -name html -o -name tests -o -name examples \) \
-        -prune -exec rm -rf {} +
+    && R -q -e "BiocManager::install( c('dada2','seqinr','Biostrings','ShortRead', 'doParallel'), version='$BIOC', Ncpus = parallel::detectCores())"
 
 RUN wget -O seqkit.tar.gz \
 	https://github.com/shenwei356/seqkit/releases/download/v${SEQKIT}/seqkit_linux_amd64.tar.gz \
@@ -45,8 +41,8 @@ RUN wget -O seqkit.tar.gz \
 RUN wget -O fastqc.zip \
 	https://www.bioinformatics.babraham.ac.uk/projects/fastqc/fastqc_v${FASTQC}.zip \
 	&& unzip fastqc.zip -d /opt \
-	&& ln -sf /opt/FastQC/fastqc /usr/local/bin/fastqc \
-	&& rm -rf FastQC fastqc.zip
+	&& chmod 777 /opt/FastQC/fastqc \
+	&& rm -rf fastqc.zip
 
 RUN wget -O /opt/parallel.deb \
       https://download.opensuse.org/repositories/home:/tange/Debian_10/all/parallel_20260522_all.deb
@@ -119,6 +115,6 @@ RUN { \
       echo "seqkit	$(seqkit version 2>&1 | head -n 1)"; \
       echo "fastqc	$(fastqc --version 2>&1 | head -n 1)"; \
       Rscript -e 'pkgs <- c("tidyverse", "dada2","seqinr"); cat(paste(pkgs, sapply(pkgs, \(p) as.character(packageVersion(p))), sep="\t"), sep="\n")'; \
-    } > /data/_SCRIPTS/program_versions.tsv
+    } > /_SCRIPTS/program_versions.tsv
 
 USER root
