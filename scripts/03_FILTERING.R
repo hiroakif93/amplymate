@@ -63,6 +63,6 @@ system2(
   "seqkit",
   args = c(
     "stats", paste0(OUTPUT, "/*FILT*gz"),
-    "-T", "-o", paste0(EVAL_FILT, "/seqkit_stat.tsv")
+    "-T", "-o", paste0(EVAL_FILT, "/seqkit.tsv")
   )
 )
