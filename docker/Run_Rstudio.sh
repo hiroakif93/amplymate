@@ -9,5 +9,4 @@ if [ "$(docker compose -f "$COMPOSE_YAML" ps --status running -q "$SERVICE")" ];
 fi
 
 docker compose -f $COMPOSE_YAML up -d amplymate
-
 open http://localhost:8787/
