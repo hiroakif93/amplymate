@@ -1,3 +1,5 @@
+name: amplymate
+
 services:
   amplymate:
     image: amplymate_v1.0
