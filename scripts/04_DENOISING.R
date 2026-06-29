@@ -104,7 +104,7 @@ if (any(sapply(dadaFRs, is.null))) {
 }
 
 seqtab.nochim <- removeBimeraDenovo(st.all, method = "consensus", multithread = TRUE, verbose = TRUE)
-rownames(seqtab.nochim) <- sub("_S.*$", "", rownames(seqtab.nochim))
+rownames(seqtab.nochim) <- rownames(seqtab.nochim)|>str_remove("_(fwd|rev)_.*")
 
 asv_id <- paste0("X_", formatC(1:ncol(seqtab.nochim), width = nchar(ncol(seqtab.nochim)), flag = "0"))
 seq.mat <- cbind(colnames(seqtab.nochim), asv_id)

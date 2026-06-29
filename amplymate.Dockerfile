@@ -25,7 +25,7 @@ RUN wget -O vsearch.tar.gz \
     && cd ../ \
     && rm -rf vsearch-${VSEARCH} vsearch.tar.gz
 
-RUN R -q -e "install.packages(c('dplyr', 'stringr', 'purrr', 'ggplot2', 'BiocManager','jsonlite', 'doParallel'), repos='https://cloud.r-project.org', Ncpus = parallel::detectCores(), INSTALL_opts = c('--strip','--no-docs','--no-help','--no-demo','--no-html'))" \
+RUN R -q -e "install.packages(c('dplyr', 'stringr', 'purrr', 'ggplot2', 'BiocManager','jsonlite', 'doParallel', 'tidyr', "vegan"), repos='https://cloud.r-project.org', Ncpus = parallel::detectCores(), INSTALL_opts = c('--strip','--no-docs','--no-help','--no-demo','--no-html'))" \
     && R -q -e "BiocManager::install( c('dada2','seqinr','Biostrings','ShortRead'), version='$BIOC', Ncpus = parallel::detectCores(), INSTALL_opts = c('--strip','--no-docs','--no-demo','--no-html'))"
 
 RUN wget -O seqkit.tar.gz \

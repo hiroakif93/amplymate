@@ -49,6 +49,7 @@ services:
       EVAL_DEMUX: "/data/EVAL/DEMUX_PRIMER"
       EVAL_TRIMMING: "/data/EVAL/TRIMMING"
       EVAL_FILT: "/data/EVAL/FILTERING"
+      DASHBOARD: "/data/EVAL/DASHBOARD"
       THREADS: 32
 
       PASSWORD: ${RSTUDIO_PASSWORD:-rstudio}

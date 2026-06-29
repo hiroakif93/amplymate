@@ -19,7 +19,7 @@ do
 	fi
 done
 
-mkdir -p ${DEMUX_BY_PRIMER} ${EVAL_SUMMARY} ${EVAL_DEMUX} ${WORKDIR}
+mkdir -p ${DEMUX_BY_PRIMER} ${EVAL_SUMMARY} ${EVAL_DEMUX} ${EVAL_SUMMARY}/RAW_FASTA ${WORKDIR}
 SUFFIX_fwd="_fwd_DEMUX_{name}.fastq.gz"
 SUFFIX_rev="_rev_DEMUX_{name}.fastq.gz"
 
@@ -68,8 +68,10 @@ find "$RAW_FASTQ" -maxdepth 1 -name '*_R1_*.fastq.gz' -print0 | parallel -0 -j $
 
 # Evaluate result
 fastqc ${DEMUX_BY_PRIMER}/*.fastq.gz --quiet -t $JOBS
-multiqc --outdir ${EVAL_DEMUX} --ignore-samples unmatch* ${DEMUX_BY_PRIMER} --force
+multiqc --outdir ${EVAL_DEMUX} --ignore-samples unmatch* ${DEMUX_BY_PRIMER}
+multiqc --outdir ${EVAL_DEMUX} --only-samples  unmatch* ${DEMUX_BY_PRIMER}
 
+seqkit stats -T ${RAW_FASTQ}/*.fastq.gz -o ${EVAL_SUMMARY}/RAW_FASTA/seqkit.tsv
 seqkit stats -T ${DEMUX_BY_PRIMER}/*.fastq.gz -o ${EVAL_DEMUX}/seqkit.tsv
 
 # Logs
@@ -79,3 +81,8 @@ first_log=$(find "$WORKDIR" -maxdepth 1 -name "*.log" -print | sort | head -n 1)
     find "$WORKDIR" -maxdepth 1 -name "*.log" | sort | xargs tail -q -n 1
 } > ${EVAL_DEMUX}/CUTADAPT.log
 rm -r ${WORKDIR}
+
+# seqkit seq -r -p scripts/FWD.fasta > scripts/FWD_rev.fasta
+# cat scripts/FWD.fasta  >>  scripts/FWD_rev.fasta
+# seqkit seq -r -p scripts/REV.fasta > scripts/REV_rev.fasta
+# cat scripts/REV.fasta  >>  scripts/REV_rev.fasta

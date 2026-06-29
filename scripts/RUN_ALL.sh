@@ -8,7 +8,7 @@ GENOME_DB="$HOME/db"
 
 export MOUNT_PATH SCRIPT_PATH GENOME_DB
 
-docker compose -f $COMPOSE_YAML run --rm --user "$(id -u):$(id -g)" amplymate bash /_SCRIPTS/01_CUTADAPT.sh
+docker compose  -p amplymate -f $COMPOSE_YAML run --rm --user "$(id -u):$(id -g)" amplymate bash /_SCRIPTS/01_CUTADAPT.sh
 docker compose -f $COMPOSE_YAML run --rm --user "$(id -u):$(id -g)" amplymate bash /_SCRIPTS/02_TRIMMING.sh
 docker compose -f $COMPOSE_YAML run --rm --user "$(id -u):$(id -g)" amplymate Rscript /_SCRIPTS/03_FILTERING.R
 docker compose -f $COMPOSE_YAML run --rm --user "$(id -u):$(id -g)" amplymate Rscript /_SCRIPTS/04_DENOISING.R
