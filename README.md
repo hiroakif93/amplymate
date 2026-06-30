@@ -7,8 +7,11 @@ This repository provides a pipeline for analyzing MiSeq/MiSeq i100 outputs.
 
 ## Usage
 ### Build Docker image
+Change the program versions using arguments in amplymate.  
+Dockerfile, especially because the version of parallel may change.  
+Then,
 ```
-# Change directory to ampymate, then
+# Open terminal on ampymate, then
 UID=$(id -u) GID=$(id -g) docker compose -f docker/amplymate_v1.0.yaml build
 ```
 Do not forget to add the UID and GID, as file permissions are restricted without these prefixes.

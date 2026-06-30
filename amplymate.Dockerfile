@@ -5,6 +5,7 @@ ARG VSEARCH
 ARG BIOC
 ARG SEQKIT
 ARG FASTQC
+ARG PARALLEL
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -25,7 +26,7 @@ RUN wget -O vsearch.tar.gz \
     && cd ../ \
     && rm -rf vsearch-${VSEARCH} vsearch.tar.gz
 
-RUN R -q -e "install.packages(c('dplyr', 'stringr', 'purrr', 'ggplot2', 'BiocManager','jsonlite', 'doParallel', 'tidyr', "vegan"), repos='https://cloud.r-project.org', Ncpus = parallel::detectCores(), INSTALL_opts = c('--strip','--no-docs','--no-help','--no-demo','--no-html'))" \
+RUN R -q -e "install.packages(c('dplyr', 'stringr', 'purrr', 'ggplot2', 'BiocManager','jsonlite', 'doParallel', 'tidyr', 'vegan'), repos='https://cloud.r-project.org', Ncpus = parallel::detectCores(), INSTALL_opts = c('--strip','--no-docs','--no-help','--no-demo','--no-html'))" \
     && R -q -e "BiocManager::install( c('dada2','seqinr','Biostrings','ShortRead'), version='$BIOC', Ncpus = parallel::detectCores(), INSTALL_opts = c('--strip','--no-docs','--no-demo','--no-html'))"
 
 RUN wget -O seqkit.tar.gz \
@@ -41,7 +42,7 @@ RUN wget -O fastqc.zip \
 	&& rm -rf fastqc.zip
 
 RUN wget -O /opt/parallel.deb \
-      https://download.opensuse.org/repositories/home:/tange/Debian_10/all/parallel_20260522_all.deb
+      https://download.opensuse.org/repositories/home:/tange/Debian_10/all/${PARALLEL}
 
 #
 FROM rocker/rstudio:4.5.3

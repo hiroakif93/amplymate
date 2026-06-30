@@ -64,6 +64,7 @@ services:
         BIOC: "3.22"
         SEQKIT: "2.13.0"
         FASTQC: "0.12.1"
+        PARALLEL: "parallel_20260622_all.deb"
 
         UID: ${UID:-1000}
         GID: ${GID:-1000}
